@@ -25,7 +25,7 @@ def mail_remind_date():
 
 	# Search all issue find issue where Remind Date is today
 
-	for issue in redmine_connect.issues.all():
+	for issue in redmine_connect.issue.all():
 
 		# Check issue have Remind Date or Remind Date is exist
 		if issue.custom_fields.get(1).value is not None:
@@ -80,7 +80,6 @@ def mail_remind_date():
 					if len(buff_email)==0:
 
 						email=redmine_connect.user.get(issue.assigned_to.id).mail
-						print(email)
 						buff_email.extend([email])
 
 						tmp = [issue.id]
@@ -136,7 +135,7 @@ def mail_remind_date():
 			tmp = u"<a href=\"http://redmine.org/issues/"
 			tmp += str(tm_issue)
 			tmp += u"\">"
-			tmp += redmine_connect.issues[tm_issue].subject
+			tmp += redmine_connect.issue.get(tm_issue).subject
 			tmp += u"</a> <br />"
 			content += tmp
 
@@ -176,7 +175,7 @@ def send_mail(addr_to, subject, content):
 
 def auto_close_resolved_issue():
 	# Auto close all issues which were resolved in lastweek
-	for issue in redmine_connect.issues.all():
+	for issue in redmine_connect.issue.all():
 		if issue.status.name == "Resolved" and (date.today()-issue.updated_on.date()).days >= 7:
 			issue.status_id=5
 			issue.notes="Hệ thống tự động close issue \n Nếu issue chưa thực sự hoàn tất vui lòng reopen để tiếp tục thực hiện"
